@@ -17,7 +17,10 @@ class Point:
         self.distance_method = {"euclid": lambda self, other_point: math.sqrt(
             (self.x - other_point.x) ** 2 + (self.y - other_point.y) ** 2),
                                 "manhattan": lambda self, other_point: abs(self.x - other_point.x) + abs(
-                                    self.y - other_point.y)}
+                                    self.y - other_point.y),
+                                "minkowski": lambda self, other_point, p: (abs(self.x - other_point.x)**p +
+                                                                          abs(self.y-other_point.y)**p)**(1/p)
+        }
         self.distance_method_selected = "euclid"
 
     def __str__(self):
@@ -29,6 +32,9 @@ class Point:
         r.y = self.y + other_point.y
         return r
 
+
+    def add_distance_method(self, name, function):
+        self.distance_method[name] = function
     def get_distance_method(self):
         return self.distance_method_selected
 
@@ -83,10 +89,12 @@ class RandomWalk:
         self.current_point = self.starting_point
 
     def set_distance_method(self, method):
-        self.current_point.set_distance_method(method)
+        self.starting_point.set_distance_method(method)
         self.current_point.set_distance_method(method)
 
     def walk(self, number_of_steps):
+        if number_of_steps < 0:
+            raise ValueError("Number of steps < 0 not allowed")
         for i in range(number_of_steps):
             self.__take_step()
 
@@ -95,4 +103,8 @@ class RandomWalk:
 
 if __name__ == '__main__':
     w = RandomWalk()
+    p = Point()
+    a = Point(1, 2.3)
+    print(a.get_distance_methods())
+    print(a.distance(p))
 
